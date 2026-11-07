@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backyard Twin</title>
+<meta name="description" content="Scan your block, design the granny flat into the real yard, and walk it full-size on your lawn before anyone digs. Concept visualisation.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Backyard Twin: see the granny flat in your backyard before anyone digs">
+<meta property="og:description" content="Scan the block, design the flat into the real yard, and walk it full-size on the lawn. Concept visualisation.">
+<meta property="og:image" content="https://woodsy2660.github.io/backyard-twin/poster/p7.jpg">
+<meta property="og:url" content="https://woodsy2660.github.io/backyard-twin/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Crect width='22' height='22' fill='%230a1018'/%3E%3Crect x='1.5' y='1.5' width='19' height='19' fill='none' stroke='%23e8edf3' stroke-width='1.5'/%3E%3Crect x='11' y='4' width='7' height='5' fill='%236fe3e8'/%3E%3Ccircle cx='7' cy='14' r='1.8' fill='%23f0b45a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="poster/p0.jpg">
+<style>
+:root {
+  /* One visual world: a night survey. The film runs on a pinned stage; every chapter reads as a numbered drawing sheet (A-01 to A-07) with a title block. */
+  --night: #0a1018;
+  --panel: #101a26;
+  --ink: #e8edf3;
+  --dim: #8e9bb0;
+  --scan: #6fe3e8;
+  --survey: #f0b45a;
+  --rule: rgba(232, 237, 243, 0.14);
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  --step-3: clamp(2.1rem, 1.3rem + 3.4vw, 4rem);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--night); color: var(--ink); }
+body { font-family: var(--body); font-size: var(--step-0); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--scan); outline-offset: 3px; border-radius: 2px; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 125%; font-weight: 700; line-height: 1.02; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+.mono { font-family: var(--mono); font-size: var(--step--1); letter-spacing: 0.02em; }
+.num { font-variant-numeric: tabular-nums; color: var(--survey); }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--night); padding: 8px 12px; z-index: 50; }
+.skip:focus { left: 8px; }
+
+/* Top bar */
+.bar { position: fixed; inset: 0 0 auto 0; z-index: 30; display: flex; align-items: center; gap: 16px; padding: 14px var(--gutter); background: linear-gradient(to bottom, rgba(10,16,24,0.92) 0%, rgba(10,16,24,0.55) 60%, rgba(10,16,24,0)); }
+.bar .sheet, .bar .tag { text-shadow: 0 1px 8px rgba(0,0,0,0.7); }
+.mark { font-family: var(--display); font-stretch: 125%; font-weight: 800; letter-spacing: 0.08em; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.mark svg { width: 22px; height: 22px; }
+.bar .sheet { margin-left: auto; color: var(--dim); }
+.bar .sheet b { color: var(--scan); font-weight: 500; }
+.tag { border: 1px solid var(--rule); color: var(--dim); padding: 4px 8px; border-radius: 2px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 10px 16px; border-radius: 2px; background: var(--scan); color: #04161a; border: 1px solid var(--scan); }
+.btn:hover { background: #9af0f3; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover { border-color: var(--scan); color: var(--scan); }
+
+/* Film */
+.film { position: relative; height: calc(var(--chapters, 7) * 150svh); }
+.stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #05080c url("poster/p0.jpg") center / cover no-repeat; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.scrim { position: absolute; inset: 0; pointer-events: none; background:
+  linear-gradient(to right, rgba(6,10,16,0.78) 0%, rgba(6,10,16,0.42) 34%, rgba(6,10,16,0) 58%),
+  linear-gradient(to top, rgba(6,10,16,0.55), rgba(6,10,16,0) 32%); }
+.copy { position: absolute; left: var(--gutter); bottom: clamp(88px, 14svh, 140px); width: min(34rem, calc(100% - 2 * var(--gutter))); }
+.ch { position: absolute; left: 0; bottom: 0; width: 100%; opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+.ch.on { opacity: 1; transform: none; pointer-events: auto; }
+.ch .eyebrow { color: var(--scan); margin-bottom: 14px; display: flex; gap: 12px; align-items: center; }
+.ch .eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--scan); }
+.ch h1 { font-size: var(--step-3); }
+.ch h2 { font-size: var(--step-3); }
+.ch p { font-size: var(--step-1); max-width: 30rem; margin: 18px 0 0; color: #d3dbe6; }
+.ch dl { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 20px 0 0; padding: 14px 0 0; border-top: 1px solid var(--rule); }
+.ch dl div { display: grid; gap: 2px; }
+.ch dt { color: var(--dim); font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.ch dd { margin: 0; font-family: var(--mono); font-size: 0.95rem; color: var(--survey); font-variant-numeric: tabular-nums; }
+.ch .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+.hint { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); color: var(--dim); display: flex; flex-direction: column; align-items: center; gap: 6px; transition: opacity 0.4s; }
+.hint i { width: 1px; height: 26px; background: linear-gradient(var(--scan), transparent); animation: drop 1.8s ease-in-out infinite; }
+@keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+/* Title block (drawing-set convention) */
+.tblock { position: absolute; right: var(--gutter); bottom: 22px; display: grid; grid-template-columns: auto auto; border: 1px solid var(--rule); background: rgba(10,16,24,0.62); backdrop-filter: blur(6px); font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--dim); min-width: 280px; }
+.tblock > div { padding: 7px 10px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.tblock > div:nth-child(2n) { border-right: 0; }
+.tblock > div:nth-last-child(-n+2) { border-bottom: 0; }
+.tblock b { display: block; color: var(--ink); font-weight: 500; font-size: 0.82rem; }
+.tblock .big b { color: var(--scan); font-size: 1.15rem; letter-spacing: 0.04em; }
+
+/* Sheet rail */
+.rail { position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%); display: grid; gap: 4px; }
+.rail button { all: unset; cursor: pointer; display: grid; grid-template-columns: 1fr 26px; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.68rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 0; }
+.rail button span { opacity: 0; transition: opacity 0.25s; text-align: right; }
+.rail button i { height: 2px; background: var(--rule); border-radius: 1px; transition: background 0.25s, transform 0.25s; transform-origin: right; }
+.rail button:hover span, .rail button:focus-visible span, .rail button.on span { opacity: 1; }
+.rail button.on i { background: var(--scan); transform: scaleX(1.5); }
+.rail button.on { color: var(--ink); }
+.loadbar { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--scan); width: 0; opacity: 0.7; transition: width 0.3s, opacity 0.6s; }
+
+/* Static fallback (reduced motion or no AVIF support) */
+.static .film { height: auto; }
+.static .stage { position: relative; height: auto; background: none; overflow: visible; }
+.static .stage canvas, .static .scrim, .static .hint, .static .rail, .static .tblock, .static .loadbar { display: none; }
+.static .copy { position: static; width: auto; display: grid; gap: 0; }
+.static .ch { position: relative; opacity: 1; transform: none; pointer-events: auto; padding: 0 0 56px; }
+.static .ch .shot { display: block; margin: 0 calc(-1 * var(--gutter)) 24px; aspect-ratio: 16 / 9; object-fit: cover; width: calc(100% + 2 * var(--gutter)); }
+.static .copy { padding: 84px var(--gutter) 0; }
+.ch .shot { display: none; }
+
+/* Sections after the film */
+section.block { padding: clamp(64px, 10vw, 128px) var(--gutter); border-top: 1px solid var(--rule); }
+.wrap { max-width: 1180px; margin: 0 auto; }
+.kicker { color: var(--scan); margin-bottom: 14px; }
+section.block h2 { font-size: var(--step-2); max-width: 22ch; }
+.lede { color: #c6cfdb; font-size: var(--step-1); max-width: 40rem; margin: 16px 0 0; }
+.twin { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; margin-top: 40px; }
+.viewer { position: relative; width: 100%; aspect-ratio: 4 / 3; background: radial-gradient(ellipse at 50% 62%, #1b2a40 0%, var(--night) 72%); border: 1px solid var(--rule); overflow: hidden; touch-action: pan-y; }
+.viewer canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.viewer canvas:active { cursor: grabbing; }
+.vstate { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--dim); pointer-events: none; }
+.vhint { position: absolute; left: 12px; bottom: 10px; margin: 0; color: var(--dim); pointer-events: none; }
+.spec { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.spec div { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.spec dt { color: var(--dim); }
+.spec dd { margin: 0; font-family: var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.outputs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 40px; border: 1px solid var(--rule); }
+.outputs article { padding: 22px 20px 26px; border-right: 1px solid var(--rule); display: grid; gap: 10px; align-content: start; }
+.outputs article:last-child { border-right: 0; }
+.outputs .fmt { color: var(--survey); }
+.outputs h3 { font-size: 1.15rem; font-stretch: 112%; }
+.outputs p { margin: 0; color: #c6cfdb; font-size: 0.95rem; }
+table.cdc { width: 100%; border-collapse: collapse; margin-top: 32px; font-variant-numeric: tabular-nums; }
+.cdc th, .cdc td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--rule); }
+.cdc th { font-family: var(--mono); font-weight: 400; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.cdc td.v { font-family: var(--mono); }
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.72rem; padding: 3px 8px; border-radius: 2px; background: rgba(111, 227, 232, 0.12); color: var(--scan); border: 1px solid rgba(111, 227, 232, 0.35); }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); }
+.cta { display: grid; gap: 16px; justify-items: start; align-content: start; }
+footer { padding: 36px var(--gutter) 48px; border-top: 1px solid var(--rule); color: var(--dim); font-size: 0.85rem; }
+footer .wrap { display: grid; gap: 8px; }
+
+@media (max-width: 860px) {
+  .outputs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .outputs article:nth-child(2) { border-right: 0; }
+  .outputs article:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  .twin, .split { grid-template-columns: 1fr; }
+  .rail { display: none; }
+}
+@media (max-width: 640px) {
+  .bar .tag, .bar .sheet { display: none; }
+  .bar .btn { margin-left: auto; padding: 8px 12px; font-size: 0.85rem; }
+  .scrim { background: linear-gradient(to top, rgba(6,10,16,0.92) 0%, rgba(6,10,16,0.62) 44%, rgba(6,10,16,0) 72%); }
+  .copy { bottom: 84px; }
+  .ch p { font-size: 1.02rem; }
+  .tblock { display: none; }
+  .hint { display: none; }
+  .outputs { grid-template-columns: 1fr; }
+  .outputs article { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .outputs article:last-child { border-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ch { transition: none; }
+  .hint i { animation: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#twin">Skip the film</a>
+<header class="bar">
+  <a class="mark" href="#top" aria-label="Backyard Twin, back to top">
+    <svg viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="4" width="7" height="5" fill="#6fe3e8"/><circle cx="7" cy="14" r="1.6" fill="#f0b45a"/></svg>
+    BACKYARD TWIN
+  </a>
+  <span class="sheet mono" aria-live="polite">Sheet <b id="sheetNo">A-01</b> / 07 · <span id="sheetName">Site</span></span>
+  <span class="tag mono">Concept visualisation</span>
+  <a class="btn" href="https://granny-flat-planner-sigma.vercel.app">Check your block</a>
+</header>
+
+<main id="top">
+  <section class="film" id="film" aria-label="One backyard, from scan to handover">
+    <div class="stage" id="stage">
+      <canvas id="cv" aria-hidden="true"></canvas>
+      <div class="scrim"></div>
+      <div class="copy" id="copy">
+        <article class="ch on" data-i="0">
+          <img class="shot" src="poster/p1.jpg" alt="Golden-hour aerial of a leafy Sydney suburb, closing in on one backyard." loading="lazy">
+          <div class="eyebrow mono">A-01 · Site</div>
+          <h1>See the granny flat in your backyard before anyone digs.</h1>
+          <p>Backyard Twin scans your block, designs the flat into the real yard, then paints it full-size on your lawn so you can walk through it.</p>
+          <dl><div><dt>Example block</dt><dd>Carlingford NSW</dd></div><div><dt>Lot</dt><dd>650 m²</dd></div><div><dt>Frontage</dt><dd>15 m</dd></div></dl>
+        </article>
+        <article class="ch" data-i="1">
+          <img class="shot" src="poster/p2.jpg" alt="The backyard turning into a glowing cyan point cloud as a tripod scanner pulses." loading="lazy">
+          <div class="eyebrow mono">A-02 · Scan</div>
+          <h2>One visit captures the whole yard.</h2>
+          <p>A tripod LiDAR scanner and a short drone flight record every fence, tree, slope and pit as millions of measured points.</p>
+          <dl><div><dt>Target time on site</dt><dd>40 min</dd></div><div><dt>Target accuracy</dt><dd>±5 mm</dd></div><div><dt>Capture</dt><dd>Tripod + drone</dd></div></dl>
+        </article>
+        <article class="ch" data-i="2">
+          <img class="shot" src="poster/p3.jpg" alt="Top-down classified site: teal lawn with contour rings, amber tree canopy, blue fence lines." loading="lazy">
+          <div class="eyebrow mono">A-03 · Classify</div>
+          <h2>The yard, understood.</h2>
+          <p>Software sorts the scan into lawn, trees, fences and structures, and draws contours every 100 mm, so what fits is decided by your exact block.</p>
+          <dl><div><dt>Fall to rear fence</dt><dd>0.6 m</dd></div><div><dt>Tree protection zone</dt><dd>6.0 m</dd></div><div><dt>Contour interval</dt><dd>100 mm</dd></div></dl>
+        </article>
+        <article class="ch" data-i="3">
+          <img class="shot" src="poster/p4.jpg" alt="A white cutaway model of the granny flat assembling at the back of the scanned yard." loading="lazy">
+          <div class="eyebrow mono">A-04 · Design</div>
+          <h2>Your planner choices, placed on the real site.</h2>
+          <p>The 2-bedroom Coastal design from the Granny Flat Planner drops onto the twin. Levels, the tree zone and the CDC thresholds are checked before a builder quotes.</p>
+          <dl><div><dt>Footprint</dt><dd>9.6 × 6.25 m</dd></div><div><dt>Floor area</dt><dd>60 m²</dd></div><div><dt>CDC pre-check</dt><dd>Pass</dd></div></dl>
+        </article>
+        <article class="ch" data-i="4">
+          <img class="shot" src="poster/p5.jpg" alt="The floor plan painted in white lines on the real lawn, with a small robot and two people standing inside it." loading="lazy">
+          <div class="eyebrow mono">A-05 · Set-out</div>
+          <h2>Walk it before you build it.</h2>
+          <p>A line-marking robot paints the floor plan full-size on your lawn. Stand in the living room, check the bedroom view, and move it a metre if it feels wrong.</p>
+          <dl><div><dt>Target set-out tolerance</dt><dd>±10 mm</dd></div><div><dt>Turf paint lasts</dt><dd>2–3 weeks</dd></div></dl>
+        </article>
+        <article class="ch" data-i="5">
+          <img class="shot" src="poster/p6.jpg" alt="Time-lapse of the flat being framed, clad and roofed on the painted plan." loading="lazy">
+          <div class="eyebrow mono">A-06 · Build</div>
+          <h2>Built where you stood.</h2>
+          <p>Your builder gets the survey, the levels and the set-out file, so the slab lands on the lines you walked.</p>
+          <dl><div><dt>Builder pack</dt><dd>Twin · levels · CDC · DXF</dd></div></dl>
+        </article>
+        <article class="ch" data-i="6">
+          <img class="shot" src="poster/p7.jpg" alt="The finished flat glowing at blue hour, seen from the back door." loading="lazy">
+          <div class="eyebrow mono">A-07 · Handover</div>
+          <h2>Welcome home.</h2>
+          <p>Start with your block. The Granny Flat Planner takes about five minutes and tells you what fits.</p>
+          <div class="actions"><a class="btn" href="https://granny-flat-planner-sigma.vercel.app">Open the Granny Flat Planner</a><a class="btn ghost" href="#twin">See the 3D model</a></div>
+        </article>
+      </div>
+      <nav class="rail" id="rail" aria-label="Jump to sheet"></nav>
+      <div class="tblock" aria-hidden="true">
+        <div class="big"><span>Sheet</span><b id="tbNo">A-01</b></div>
+        <div><span>Drawing</span><b id="tbName">Site</b></div>
+        <div class="hide-sm"><span>Project</span><b>Okafor flat</b></div>
+        <div class="hide-sm"><span>Location</span><b>Carlingford NSW</b></div>
+        <div><span>Lot</span><b class="num">650 m²</b></div>
+        <div><span>Scale</span><b>NTS · Concept</b></div>
+      </div>
+      <div class="hint mono" id="hint"><span>Scroll to follow one backyard</span><i></i></div>
+      <div class="loadbar" id="loadbar"></div>
+    </div>
+  </section>
+
+  <section class="block" id="twin">
+    <div class="wrap">
+      <div class="kicker mono">A-08 · The flat, as a model</div>
+      <h2>Turn it around. Every finish comes from the planner.</h2>
+      <p class="lede">This is the flat from the film as a 3D model built from four generated views. In the product, the same model is exported from the design and placed on your scanned yard at true scale.</p>
+      <div class="twin">
+        <div class="viewer" id="viewer" role="img" aria-label="Interactive 3D model of a white weatherboard granny flat with a dark roof and a timber deck. Drag to turn it.">
+          <canvas id="v3d"></canvas>
+          <p class="vstate mono" id="vstate">Loading the 3D model (5.6 MB)</p>
+          <p class="vhint mono">Drag to turn · scroll or pinch to zoom</p>
+        </div>
+        <dl class="spec">
+          <div><dt>Footprint</dt><dd>9.6 × 6.25 m</dd></div>
+          <div><dt>Floor area</dt><dd>60 m²</dd></div>
+          <div><dt>Bedrooms</dt><dd>2</dd></div>
+          <div><dt>Style</dt><dd>Coastal</dd></div>
+          <div><dt>Cladding</dt><dd>Weatherboard, Surf white</dd></div>
+          <div><dt>Roof</dt><dd>Steel, Ironstone</dd></div>
+          <div><dt>Deck</dt><dd>Spotted gum</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="builders">
+    <div class="wrap">
+      <div class="kicker mono">A-09 · For builders</div>
+      <h2>Quote from a measured site, not a phone photo.</h2>
+      <p class="lede">Every qualified lead from the Granny Flat Planner can arrive with a scanned twin of the yard. These are the files a builder receives before the first site visit.</p>
+      <div class="outputs">
+        <article><span class="fmt mono">.E57 · .LAS</span><h3>Site twin</h3><p>The whole yard as a measured point cloud: fences, trees, slopes, pits and the existing house.</p></article>
+        <article><span class="fmt mono">PDF · DWG</span><h3>Levels and contours</h3><p>Contours every 100 mm and spot levels, so the 0.6 m fall is priced into the slab before quoting.</p></article>
+        <article><span class="fmt mono">PDF</span><h3>Compliance pre-check</h3><p>Lot size, frontage and floor area checked against the NSW complying development thresholds.</p></article>
+        <article><span class="fmt mono">DXF</span><h3>Set-out file</h3><p>The approved footprint as robot-ready lines, painted on site to ±10 mm.</p></article>
+      </div>
+      <div class="split" style="margin-top:56px">
+        <div>
+          <h3 style="font-size:1.25rem;font-stretch:112%">The example block against the NSW CDC thresholds</h3>
+          <table class="cdc">
+            <thead><tr><th>Check</th><th>Threshold</th><th>This block</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Lot area</td><td class="v">≥ 450 m²</td><td class="v num">650 m²</td><td><span class="pill">Pass</span></td></tr>
+              <tr><td>Frontage</td><td class="v">≥ 12 m</td><td class="v num">15 m</td><td><span class="pill">Pass</span></td></tr>
+              <tr><td>Secondary dwelling floor area</td><td class="v">≤ 60 m²</td><td class="v num">60 m²</td><td><span class="pill">Pass</span></td></tr>
+            </tbody>
+          </table>
+          <p class="mono" style="color:var(--dim);margin-top:12px">Example only. Setbacks, trees and services are checked against the scan on each real block.</p>
+        </div>
+        <div class="cta">
+          <h3 style="font-size:1.25rem;font-stretch:112%">Start with your block</h3>
+          <p class="lede" style="margin:0">The Granny Flat Planner takes about five minutes and tells you what fits. Qualified blocks are offered a scan.</p>
+          <a class="btn" href="https://granny-flat-planner-sigma.vercel.app">Open the Granny Flat Planner</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Concept visualisation. The Okafor family, their Carlingford block and every figure shown here are examples, not a real job or a performance claim.</span>
+    <span>Imagery generated with Higgsfield: Nano Banana Pro stills, Kling O3 video, Hunyuan3D / Tripo model. Backyard Twin is a working name.</span>
+  </div>
+</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+const box = document.getElementById("viewer"), cv = document.getElementById("v3d"), state = document.getElementById("vstate");
+let started = false;
+function fail(msg) { state.textContent = msg; }
+function loadData() {
+  return new Promise((res, rej) => {
+    if (window.__FLAT_GLB__) return res();
+    const s = document.createElement("script"); s.src = "model/flat.js"; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  });
+}
+async function start() {
+  if (started) return; started = true;
+  try { await loadData(); } catch (e) { return fail("The 3D model could not load. Reload the page to try again."); }
+  const bin = Uint8Array.from(atob(window.__FLAT_GLB__), c => c.charCodeAt(0)).buffer;
+  const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+  const sun = new THREE.DirectionalLight(0xfff1dc, 2.2); sun.position.set(3, 5, 2.5); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 4; scene.add(sun);
+  const cam = new THREE.PerspectiveCamera(32, 4 / 3, 0.01, 100);
+  const controls = new OrbitControls(cam, cv);
+  controls.enableDamping = true; controls.enablePan = false; controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
+  controls.minPolarAngle = 0.35; controls.maxPolarAngle = 1.45;
+  const loader = new GLTFLoader();
+  // Load embedded textures through <img> so the page needs no fetch() of blob URLs.
+  loader.register(parser => { parser.textureLoader = new THREE.TextureLoader(parser.options.manager); return { name: "img_textures" }; });
+  loader.parse(bin, "", gltf => {
+    const m = gltf.scene;
+    m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    const b = new THREE.Box3().setFromObject(m), c = b.getCenter(new THREE.Vector3()), sz = b.getSize(new THREE.Vector3());
+    m.position.sub(c); m.position.y += sz.y / 2;
+    scene.add(m);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(sz.x * 6, sz.z * 6), new THREE.ShadowMaterial({ opacity: 0.35 }));
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    const r = Math.max(sz.x, sz.z);
+    sun.shadow.camera.left = -r; sun.shadow.camera.right = r; sun.shadow.camera.top = r; sun.shadow.camera.bottom = -r;
+    sun.position.set(r * 2, r * 3, r * 1.6); sun.target.position.set(0, 0, 0); scene.add(sun.target);
+    cam.position.set(-r * 1.15, sz.y * 1.9, r * 1.55); controls.target.set(0, sz.y * 0.45, 0);
+    controls.minDistance = r * 0.9; controls.maxDistance = r * 3.2; controls.update();
+    state.textContent = "";
+  }, err => fail("The 3D model could not be read in this browser."));
+  function size() {
+    const w = box.clientWidth, h = box.clientHeight;
+    renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
+  }
+  size(); new ResizeObserver(size).observe(box);
+  let visible = true;
+  new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(box);
+  cv.addEventListener("pointerdown", () => { controls.autoRotate = false; });
+  renderer.setAnimationLoop(() => { if (!visible) return; controls.update(); renderer.render(scene, cam); });
+}
+const io = new IntersectionObserver(e => { if (e[0].isIntersecting) { io.disconnect(); start(); } }, { rootMargin: "600px" });
+io.observe(box);
+</script>
+<script>
+(function () {
+  "use strict";
+  var COUNTS = [80, 60, 60, 80, 80, 80, 60];
+  var NAMES = ["Site", "Scan", "Classify", "Design", "Set-out", "Build", "Handover"];
+  var AVIF_PROBE = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAIAAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAgAAAAIAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAKG1kYXQSAAoIGAA2iAhoNCAyEh7Hh4VZ3///4sAAAJA1jjx+rQ==";
+  var root = document.documentElement;
+  var film = document.getElementById("film");
+  var stage = document.getElementById("stage");
+  var cv = document.getElementById("cv");
+  var ctx = cv.getContext("2d", { alpha: false });
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".ch"));
+  var rail = document.getElementById("rail");
+  var hint = document.getElementById("hint");
+  var loadbar = document.getElementById("loadbar");
+  var sheetNo = document.getElementById("sheetNo"), sheetName = document.getElementById("sheetName");
+  var tbNo = document.getElementById("tbNo"), tbName = document.getElementById("tbName");
+  var TOTAL = COUNTS.reduce(function (a, b) { return a + b; }, 0);
+  var starts = []; (function () { var s = 0; COUNTS.forEach(function (c) { starts.push(s); s += c; }); })();
+  root.style.setProperty("--chapters", COUNTS.length);
+
+  function goStatic() {
+    root.classList.add("static");
+    chapters.forEach(function (c) { c.classList.add("on"); });
+  }
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) { goStatic(); return; }
+
+  var probe = new Image();
+  probe.onload = function () { if (probe.width > 0) start(); else goStatic(); };
+  probe.onerror = goStatic;
+  probe.src = AVIF_PROBE;
+
+  function pad(n) { return (n < 10 ? "00" : n < 100 ? "0" : "") + n; }
+  function src(ch, i) { return "f/" + (ch + 1) + "/" + pad(i + 1) + ".avif"; }
+
+  function start() {
+    var frames = new Array(TOTAL);
+    var loadedCount = 0;
+    var queue = [];
+    var inflight = 0, MAXIN = 6;
+    var current = 0, target = 0, lastDrawn = -1, activeCh = -1;
+    var poster = new Image(); poster.src = "poster/p0.jpg";
+
+    // rail
+    NAMES.forEach(function (n, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = "<span>A-0" + (i + 1) + " " + n + "</span><i></i>";
+      b.setAttribute("aria-label", "Jump to sheet A-0" + (i + 1) + ", " + n);
+      b.addEventListener("click", function () { jumpTo(i); });
+      rail.appendChild(b);
+    });
+    var railBtns = rail.querySelectorAll("button");
+
+    function jumpTo(i) {
+      var top = film.offsetTop + (starts[i] + 2) / (TOTAL - 1) * (film.offsetHeight - window.innerHeight);
+      window.scrollTo({ top: top, behavior: "smooth" });
+    }
+
+    function enqueueChapter(ch, front) {
+      var list = [];
+      // coarse pass first (every 4th frame), then fill in
+      for (var step = 4; step >= 1; step = step === 4 ? 2 : step === 2 ? 1 : 0) {
+        for (var i = 0; i < COUNTS[ch]; i += step) {
+          var g = starts[ch] + i;
+          if (!frames[g] && list.indexOf(g) < 0) list.push(g);
+        }
+        if (step === 1) break;
+      }
+      queue = front ? list.concat(queue.filter(function (g) { return list.indexOf(g) < 0; })) : queue.concat(list.filter(function (g) { return queue.indexOf(g) < 0; }));
+      pump();
+    }
+    function chOf(g) { for (var c = COUNTS.length - 1; c >= 0; c--) if (g >= starts[c]) return c; return 0; }
+    function pump() {
+      while (inflight < MAXIN && queue.length) {
+        var g = queue.shift();
+        if (frames[g]) continue;
+        load(g);
+      }
+    }
+    function load(g) {
+      var ch = chOf(g), img = new Image();
+      inflight++;
+      img.decoding = "async";
+      img.onload = function () {
+        var done = function () { frames[g] = img; inflight--; loadedCount++; progressBar(); if (Math.abs(g - current) < 3) lastDrawn = -1; pump(); };
+        if (img.decode) img.decode().then(done, done); else done();
+      };
+      img.onerror = function () { inflight--; pump(); };
+      img.src = src(ch, g - starts[ch]);
+    }
+    function progressBar() {
+      var p = loadedCount / TOTAL;
+      loadbar.style.width = (p * 100).toFixed(1) + "%";
+      if (p >= 1) loadbar.style.opacity = "0";
+    }
+    function nearest(g) {
+      if (frames[g]) return frames[g];
+      for (var d = 1; d < 12; d++) {
+        if (frames[g - d]) return frames[g - d];
+        if (frames[g + d]) return frames[g + d];
+      }
+      return null;
+    }
+
+    var dpr = 1, W = 0, H = 0;
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      W = stage.clientWidth; H = stage.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      lastDrawn = -1;
+    }
+    function cover(img) {
+      var iw = img.naturalWidth, ih = img.naturalHeight;
+      var s = Math.max(cv.width / iw, cv.height / ih);
+      var dw = iw * s, dh = ih * s;
+      return [(cv.width - dw) / 2, (cv.height - dh) / 2, dw, dh];
+    }
+    function draw(pos) {
+      var a = Math.floor(pos), f = pos - a;
+      var A = nearest(a), B = f > 0.02 ? nearest(Math.min(a + 1, TOTAL - 1)) : null;
+      if (!A) { if (poster.complete && poster.naturalWidth) { var r0 = cover(poster); ctx.drawImage(poster, r0[0], r0[1], r0[2], r0[3]); } return; }
+      var r = cover(A);
+      ctx.globalAlpha = 1; ctx.drawImage(A, r[0], r[1], r[2], r[3]);
+      if (B && B !== A) { ctx.globalAlpha = f; ctx.drawImage(B, r[0], r[1], r[2], r[3]); ctx.globalAlpha = 1; }
+    }
+    function readScroll() {
+      var max = film.offsetHeight - window.innerHeight;
+      var y = window.scrollY - film.offsetTop;
+      var p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+      target = p * (TOTAL - 1);
+      hint.style.opacity = y > 40 ? "0" : "1";
+    }
+    function setChapter(ch) {
+      if (ch === activeCh) return;
+      activeCh = ch;
+      chapters.forEach(function (c, i) { c.classList.toggle("on", i === ch); });
+      railBtns.forEach(function (b, i) { b.classList.toggle("on", i === ch); });
+      var no = "A-0" + (ch + 1);
+      sheetNo.textContent = no; tbNo.textContent = no; sheetName.textContent = NAMES[ch]; tbName.textContent = NAMES[ch];
+      // keep the next chapter warm
+      enqueueChapter(ch, true);
+      if (ch + 1 < COUNTS.length) enqueueChapter(ch + 1, false);
+    }
+    function tick() {
+      current += (target - current) * 0.16;
+      if (Math.abs(target - current) < 0.002) current = target;
+      var pos = Math.round(current * 100) / 100;
+      if (pos !== lastDrawn) { draw(pos); lastDrawn = pos; }
+      // chapter switches a little before the boundary so copy leads the picture
+      setChapter(chOf(Math.min(TOTAL - 1, Math.round(current + 3))));
+      requestAnimationFrame(tick);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("scroll", readScroll, { passive: true });
+    readScroll(); current = target;
+    enqueueChapter(0, true);
+    for (var c = 1; c < COUNTS.length; c++) enqueueChapter(c, false);
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>
